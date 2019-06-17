@@ -8,4 +8,11 @@ public class MyTest {
         System.out.println("hello git!!!");
         System.out.println("hello git!!!");
     }
+
+    public void test() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i);
+        }
+    }
+
 }
