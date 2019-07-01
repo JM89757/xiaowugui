@@ -11,7 +11,10 @@ import entity.PageResult;
 import com.pinyougou.sellergoods.service.BrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BrandServiceImpl implements BrandService {
@@ -19,6 +22,19 @@ public class BrandServiceImpl implements BrandService {
     @Autowired
     private TbBrandMapper brandMapper;
 
+
+    @Override
+    public List<Map<String, Object>> selectOptionList() {
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<TbBrand> tbBrands = brandMapper.selectByExample(null);
+        for (TbBrand tbBrand : tbBrands) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", tbBrand.getId());
+            map.put("text", tbBrand.getName());
+            list.add(map);
+        }
+        return list;
+    }
 
     @Override
     public List<TbBrand> findAll() {

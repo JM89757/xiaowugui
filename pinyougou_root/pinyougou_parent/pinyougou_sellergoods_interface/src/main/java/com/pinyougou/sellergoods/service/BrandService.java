@@ -4,8 +4,12 @@ import com.pinyougou.pojo.TbBrand;
 import entity.PageResult;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BrandService {
+
+    public List<Map<String, Object>> selectOptionList();
+
     public List<TbBrand> findAll();
 
     public PageResult findPage(Integer pageNum, Integer pageSize);
@@ -19,9 +23,8 @@ public interface BrandService {
     public void delete(Long[] ids);
 
     /**
-     *
-     * @param brand 对象
-     * @param pageNum 当前页码
+     * @param brand    对象
+     * @param pageNum  当前页码
      * @param pageSize 当前总条数
      * @return 封装到结果集
      */
