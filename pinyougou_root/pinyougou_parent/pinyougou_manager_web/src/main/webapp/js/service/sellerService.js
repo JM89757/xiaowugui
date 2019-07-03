@@ -2,6 +2,11 @@
 app.service('sellerService',function($http){
 	    	
 	//读取列表数据绑定到表单中
+	this.updateStatus = function (sellerId, status) {
+		return $http.get('../seller/updateStatus.do?sellerId='+sellerId+'&status='+status);
+	};
+
+
 	this.findAll=function(){
 		return $http.get('../seller/findAll.do');		
 	}
