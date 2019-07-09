@@ -14,14 +14,14 @@ public class UploadController {
     private String file_server_url;
 
     @RequestMapping("/upload")
-    public Result upload(MultipartFile multipartFile) {
+    public Result upload(MultipartFile file) {
 
-        String originalFilename = multipartFile.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
         String extName = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
         try {
             FastDFSClient fastDFSClient = new FastDFSClient("classpath:config/fdfs_client.conf");
 
-            String path = fastDFSClient.uploadFile(multipartFile.getBytes(), extName);
+            String path = fastDFSClient.uploadFile(file.getBytes(), extName);
             String url = file_server_url + path;
             return new Result(true, url);
         } catch (Exception e) {

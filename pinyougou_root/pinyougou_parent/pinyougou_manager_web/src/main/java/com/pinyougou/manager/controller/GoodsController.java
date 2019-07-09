@@ -1,18 +1,17 @@
 package com.pinyougou.manager.controller;
 
-import java.util.List;
-
-import com.pinyougou.pojo.GoodsEntityGroup;
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.pojo.Goods;
+import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.sellergoods.service.GoodsService;
+import entity.PageResult;
+import entity.Result;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbGoods;
-import com.pinyougou.sellergoods.service.GoodsService;
 
-import entity.PageResult;
-import entity.Result;
+import java.util.List;
 
 /**
  * controller
@@ -25,6 +24,19 @@ public class GoodsController {
 
     @Reference
     private GoodsService goodsService;
+
+
+    @RequestMapping("/updateStatus")
+    public Result updateStatus(Long[] ids, String status) {
+        try {
+            goodsService.updateStatus(ids, status);
+            return new Result(true, "Success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "Failure");
+        }
+    }
+
 
     /**
      * 返回全部列表
@@ -55,9 +67,9 @@ public class GoodsController {
      */
 
     @RequestMapping("/add")
-    public Result add(@RequestBody GoodsEntityGroup goods) {
+    public Result add(@RequestBody Goods goods) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        goods.getTbGoods().setSellerId(name);
+        goods.getGoods().setSellerId(name);
         try {
             goodsService.add(goods);
             return new Result(true, "增加成功");
@@ -74,7 +86,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping("/update")
-    public Result update(@RequestBody TbGoods goods) {
+    public Result update(@RequestBody Goods goods) {
         try {
             goodsService.update(goods);
             return new Result(true, "修改成功");
@@ -91,7 +103,7 @@ public class GoodsController {
      * @return
      */
     @RequestMapping("/findOne")
-    public TbGoods findOne(Long id) {
+    public Goods findOne(Long id) {
         return goodsService.findOne(id);
     }
 

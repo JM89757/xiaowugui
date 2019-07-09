@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
     <!-- 页面meta -->
     <meta charset="utf-8">
@@ -40,9 +39,9 @@
 
 <div class="box-body">
     <ol class="breadcrumb">
-        <li >
+        <li>
             <!--<a href="#" ng-click="grade=1;selectList({id:0})" ng-click="search(1,10)">顶级分类列表</a>-->
-            <a href="#" ng-click="grade=1;selectList({id:0})" >顶级分类列表</a>
+            <a href="#" ng-click="grade=1;selectList({id:0})">顶级分类列表</a>
         </li>
         <li>
             <a href="#" ng-click="grade=2;selectList(entity_1)">{{entity_1.name}}</a>
@@ -105,7 +104,8 @@
                         查询下级
                     </button>
                         </span>
-                    <button class="btn bg-olive btn-xs" data-target="#editModal" data-toggle="modal" ng-click="findOne(entity.id)"
+                    <button class="btn bg-olive btn-xs" data-target="#editModal" data-toggle="modal"
+                            ng-click="findOne(entity.id)"
                             type="button">修改
                     </button>
                 </td>

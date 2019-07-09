@@ -2,6 +2,12 @@
 app.service('goodsService',function($http){
 	    	
 	//读取列表数据绑定到表单中
+
+	this.updateStatus = function (ids, status) {
+		return $http.get('../goods/updateStatus.do?ids='+ids+"&status="+status);
+	};
+
+
 	this.findAll=function(){
 		return $http.get('../goods/findAll.do');		
 	}

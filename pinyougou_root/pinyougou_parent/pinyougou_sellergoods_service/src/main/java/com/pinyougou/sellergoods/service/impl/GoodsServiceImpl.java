@@ -1,20 +1,20 @@
 package com.pinyougou.sellergoods.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
+import com.pinyougou.pojo.TbGoodsExample.Criteria;
+import com.pinyougou.sellergoods.service.GoodsService;
+import entity.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
-import com.pinyougou.mapper.*;
-import com.pinyougou.pojo.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.dubbo.config.annotation.Service;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.pinyougou.pojo.TbGoodsExample.Criteria;
-import com.pinyougou.sellergoods.service.GoodsService;
-
-import entity.PageResult;
 
 /**
  * 服务实现层
@@ -22,6 +22,7 @@ import entity.PageResult;
  * @author Administrator
  */
 @Service
+@Transactional
 public class GoodsServiceImpl implements GoodsService {
 
 
@@ -48,6 +49,25 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private TbGoodsDescMapper tbGoodsDescMapper;
 
+
+    @Override
+    public void updateIsMarketable(Long[] ids, String status) {
+        for (Long id : ids) {
+            TbGoods goods = goodsMapper.selectByPrimaryKey(id);
+            goods.setIsMarketable(status);
+            goodsMapper.updateByPrimaryKey(goods);
+        }
+    }
+
+    @Override
+    public void updateStatus(Long[] ids, String status) {
+        for (Long id : ids) {
+            TbGoods goods = goodsMapper.selectByPrimaryKey(id);
+            goods.setAuditStatus(status);
+            goodsMapper.updateByPrimaryKey(goods);
+        }
+    }
+
     /**
      * 查询全部
      */
@@ -73,14 +93,19 @@ public class GoodsServiceImpl implements GoodsService {
 /*	public void add(TbGoods goods) {
 		goodsMapper.insert(goods);		
 	}*/
-    public void add(GoodsEntityGroup goods) {
-        goods.getTbGoods().setAuditStatus("0");
-        goodsMapper.insert(goods.getTbGoods());
-        goods.getTbGoodsDesc().setGoodsId(goods.getTbGoods().getId());
-        tbGoodsDescMapper.insert(goods.getTbGoodsDesc());
-        if ("1".equals(goods.getTbGoods().getIsEnableSpec())) {
-            for (TbItem item : goods.getTbItemList()) {
-                String goodsName = goods.getTbGoods().getGoodsName();
+    public void add(Goods goods) {
+        goods.getGoods().setAuditStatus("0");
+        goodsMapper.insert(goods.getGoods());
+        goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());
+        tbGoodsDescMapper.insert(goods.getGoodsDesc());
+        saveItemList(goods);
+
+    }
+
+    private void saveItemList(Goods goods) {
+        if ("1".equals(goods.getGoods().getIsEnableSpec())) {
+            for (TbItem item : goods.getItemList()) {
+                String goodsName = goods.getGoods().getGoodsName();
                 Map<String, Object> map = JSON.parseObject(item.getSpec());
                 for (String key : map.keySet()) {
                     goodsName += " " + map.get(key);
@@ -91,8 +116,8 @@ public class GoodsServiceImpl implements GoodsService {
             }
         } else {
             TbItem item = new TbItem();
-            item.setTitle(goods.getTbGoods().getGoodsName());
-            item.setPrice(goods.getTbGoods().getPrice());
+            item.setTitle(goods.getGoods().getGoodsName());
+            item.setPrice(goods.getGoods().getPrice());
             item.setStatus("1");
             item.setIsDefault("1");
             item.setNum(99999);
@@ -100,22 +125,21 @@ public class GoodsServiceImpl implements GoodsService {
             setItemValues(goods, item);
             itemMapper.insert(item);
         }
-
     }
 
-    private void setItemValues(GoodsEntityGroup goods, TbItem item) {
-        item.setGoodsId(goods.getTbGoods().getId());
-        item.setSellerId(goods.getTbGoods().getSellerId());
-        item.setCategoryid(goods.getTbGoods().getCategory3Id());
+    private void setItemValues(Goods goods, TbItem item) {
+        item.setGoodsId(goods.getGoods().getId());
+        item.setSellerId(goods.getGoods().getSellerId());
+        item.setCategoryid(goods.getGoods().getCategory3Id());
         item.setCreateTime(new Date());
         item.setUpdateTime(new Date());
-        TbBrand brand = brandMapper.selectByPrimaryKey(goods.getTbGoods().getBrandId());
+        TbBrand brand = brandMapper.selectByPrimaryKey(goods.getGoods().getBrandId());
         item.setBrand(brand.getName());
-        TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(goods.getTbGoods().getCategory3Id());
+        TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(goods.getGoods().getCategory3Id());
         item.setCategory(itemCat.getName());
-        TbSeller seller = sellerMapper.selectByPrimaryKey(goods.getTbGoods().getSellerId());
+        TbSeller seller = sellerMapper.selectByPrimaryKey(goods.getGoods().getSellerId());
         item.setSeller(seller.getNickName());
-        List<Map> imageList = JSON.parseArray(goods.getTbGoodsDesc().getItemImages(), Map.class);
+        List<Map> imageList = JSON.parseArray(goods.getGoodsDesc().getItemImages(), Map.class);
         if (imageList.size() > 0) {
             item.setImage((String) imageList.get(0).get("url"));
         }
@@ -125,8 +149,16 @@ public class GoodsServiceImpl implements GoodsService {
      * 修改
      */
     @Override
-    public void update(TbGoods goods) {
-        goodsMapper.updateByPrimaryKey(goods);
+    public void update(Goods goods) {
+        goods.getGoods().setAuditStatus("0");
+        goodsMapper.updateByPrimaryKey(goods.getGoods());
+        tbGoodsDescMapper.updateByPrimaryKey(goods.getGoodsDesc());
+
+        TbItemExample example = new TbItemExample();
+        com.pinyougou.pojo.TbItemExample.Criteria criteria = example.createCriteria();
+        criteria.andGoodsIdEqualTo(goods.getGoods().getId());
+        itemMapper.deleteByExample(example);
+        saveItemList(goods);
     }
 
     /**
@@ -136,8 +168,19 @@ public class GoodsServiceImpl implements GoodsService {
      * @return
      */
     @Override
-    public TbGoods findOne(Long id) {
-        return goodsMapper.selectByPrimaryKey(id);
+    public Goods findOne(Long id) {
+        Goods group = new Goods();
+        TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+        group.setGoods(tbGoods);
+        TbGoodsDesc tbGoodsDesc = tbGoodsDescMapper.selectByPrimaryKey(id);
+        group.setGoodsDesc(tbGoodsDesc);
+
+        TbItemExample example = new TbItemExample();
+        TbItemExample.Criteria criteria = example.createCriteria();
+        criteria.andGoodsIdEqualTo(id);
+        List<TbItem> itemList = itemMapper.selectByExample(example);
+        group.setItemList(itemList);
+        return group;
     }
 
     /**
@@ -146,7 +189,9 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public void delete(Long[] ids) {
         for (Long id : ids) {
-            goodsMapper.deleteByPrimaryKey(id);
+            TbGoods goods = goodsMapper.selectByPrimaryKey(id);
+            goods.setIsDelete("1");
+            goodsMapper.updateByPrimaryKey(goods);
         }
     }
 
@@ -157,10 +202,11 @@ public class GoodsServiceImpl implements GoodsService {
 
         TbGoodsExample example = new TbGoodsExample();
         Criteria criteria = example.createCriteria();
-
+        criteria.andIsDeleteIsNull();
         if (goods != null) {
             if (goods.getSellerId() != null && goods.getSellerId().length() > 0) {
-                criteria.andSellerIdLike("%" + goods.getSellerId() + "%");
+//                criteria.andSellerIdLike("%" + goods.getSellerId() + "%");
+                criteria.andSellerIdEqualTo(goods.getSellerId());
             }
             if (goods.getGoodsName() != null && goods.getGoodsName().length() > 0) {
                 criteria.andGoodsNameLike("%" + goods.getGoodsName() + "%");
