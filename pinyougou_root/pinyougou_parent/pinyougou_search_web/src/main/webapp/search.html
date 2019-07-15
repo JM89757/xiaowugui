@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible"/>
     <title>产品列表页</title>
-    <link href="assets/img/favicon.ico" rel="icon">
+    <!--<link href="assets/img/favicon.ico" rel="icon">-->
 
     <link href="css/webbase.css" rel="stylesheet" type="text/css"/>
     <link href="css/pages-list.css" rel="stylesheet" type="text/css"/>
@@ -19,7 +19,7 @@
 
 </head>
 
-<body ng-app="pinyougou" ng-controller="searchController">
+<body ng-app="pinyougou" ng-controller="searchController" ng-init="loadKeywords()">
 <!-- 头部栏位 -->
 <!--页面顶部-->
 <div id="nav-bottom">
@@ -154,7 +154,7 @@
         <div class="bread">
             <ul class="fl sui-breadcrumb">
                 <li>
-                    <a href="#">搜索条件：</a>
+                    <a href="#"><span ng-if="resultMap.brandList!=null">搜索条件：</span></a>
                 </li>
 
 
@@ -168,7 +168,7 @@
                     {{key}}：{{value}}<i class="sui-icon icon-tb-close"></i></li>
                 <li class="tag" ng-click="removeSearchItem('price')" ng-if="searchMap.price!=''">
                     商品分类：{{searchMap.price}}<i class="sui-icon icon-tb-close"></i></li>
-                搜索结果：{{resultMap.total}}条
+                <span ng-if="resultMap.brandList!=null">搜索结果：{{resultMap.total}}条</span>
             </ul>
 
             <div class="clearfix"></div>
@@ -184,7 +184,8 @@
                 </div>
                 <div class="fl ext"></div>
             </div>
-            <div class="type-wrap logo" ng-if="resultMap.brandList!=null && searchMap.brand=='' ">
+            <div class="type-wrap logo"
+                 ng-if="resultMap.brandList!=null && searchMap.brand=='' && keywordsIsBrand()==false">
                 <div class="fl key brand">品牌</div>
                 <div class="value logos">
                     <ul class="logo-list">
@@ -210,7 +211,7 @@
                 <div class="fl ext"></div>
             </div>
 
-            <div class="type-wrap" ng-if="searchMap.price=='' ">
+            <div class="type-wrap" ng-if="searchMap.price==''&&resultMap.brandList!=null ">
                 <div class="fl key">价格</div>
                 <div class="fl value">
                     <ul class="type-list">
@@ -237,7 +238,7 @@
                 <div class="fl ext">
                 </div>
             </div>
-            <div class="type-wrap">
+            <div class="type-wrap" ng-if="resultMap.brandList!=null">
                 <div class="fl key">更多筛选项</div>
                 <div class="fl value">
                     <ul class="type-list">
@@ -324,15 +325,18 @@
             <div class="fr page">
                 <div class="sui-pagination pagination-large">
                     <ul>
-                        <li class="prev {{isTopPage()?'disabled':''}}">
+                        <!--<li class="prev {{isTopPage()?'disabled':''}}">-->
+                        <li class="prev {{searchMap.pageNo == 1?'disabled':''}}">
                             <a href="#goodsList" ng-click="queryByPage(searchMap.pageNo-1)">«</a>
                         </li>
                         <li class="dotted" ng-if="firstDot==true"><span>...</span></li>
-                        <li class="$scope.resultMap.pageNo==page?'active':''" ng-repeat="page in pageLabel">
+                        <!--<li class="{{equal(page)?'active':''}}" ng-repeat="page in pageLabel">-->
+                        <li class="{{searchMap.pageNo ==page?'active':''}}" ng-repeat="page in pageLabel">
                             <a href="#goodsList" ng-click="queryByPage(page)">{{page}}</a>
                         </li>
                         <li class="dotted" ng-if="lastDot==true"><span>...</span></li>
-                        <li class="next {{isEndPage()?'disabled':''}}">
+                        <!--<li class="next {{isEndPage()?'disabled':''}}">-->
+                        <li class="next {{searchMap.pageNo ==resultMap.totalPages?'disabled':''}}">
                             <a href="#goodsList" ng-click="queryByPage(searchMap.pageNo+1)">»</a>
                         </li>
                     </ul>

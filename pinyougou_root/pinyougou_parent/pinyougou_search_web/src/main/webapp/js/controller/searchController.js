@@ -1,4 +1,4 @@
-app.controller('searchController', function ($scope, searchService) {
+app.controller('searchController', function ($scope, $location, searchService) {
 
     $scope.searchMap = {
         'keywords': '',
@@ -12,14 +12,37 @@ app.controller('searchController', function ($scope, searchService) {
         'sortField': ''
     };
 
-
-    $scope.isTopPage = function () {
-        return $scope.searchMap.pageNo === 1;
+    $scope.loadKeywords = function () {
+        // $scope.searchMap.keywords = $location.search()['keywords'];
+        $scope.searchMap.keywords = $location.search().keywords;
+        $scope.search();
     };
 
-    $scope.isEndPage = function () {
-        return $scope.searchMap.pageNo === $scope.resultMap.totalPages;
+
+    $scope.keywordsIsBrand = function () {
+        for (var i = 0; i < $scope.resultMap.brandList.length; i++) {
+            if ($scope.searchMap.keywords.indexOf($scope.resultMap.brandList[i].text) >= 0) {
+                return true;
+            }
+        }
+        return false;
     };
+
+
+    /*   $scope.equal = function (pageNo) {
+           return $scope.searchMap.pageNo === pageNo;
+       };*/
+
+
+    /*
+        $scope.isTopPage = function () {
+            return $scope.searchMap.pageNo === 1;
+        };
+
+        $scope.isEndPage = function () {
+            return $scope.searchMap.pageNo === $scope.resultMap.totalPages;
+        };
+    */
 
     $scope.sortSearch = function (sortField, sort) {
         $scope.searchMap.sortField = sortField;
@@ -47,13 +70,14 @@ app.controller('searchController', function ($scope, searchService) {
         );
     };
 
-/*    let buildPageLabel = function () {
+    /*let buildPageLabel = function () {
         $scope.pageLabel = [];
         let maxPageNo = $scope.resultMap.totalPages;
         let pageNo = $scope.resultMap.pageNo;
         let pageNo1 = $scope.searchMap.pageNo;
         let firstPage = 1;
         let lastPage = maxPageNo;
+        // let lastPage = $scope.resultMap.totalPages;
         $scope.firstDot = true;
         $scope.lastDot = true;
         if (maxPageNo > 5) {
@@ -77,7 +101,7 @@ app.controller('searchController', function ($scope, searchService) {
     };*/
 
 
-    buildPageLabel = function () {
+    let buildPageLabel = function () {
         //构建分页栏
         $scope.pageLabel = [];
         let firstPage = 1;//开始页码

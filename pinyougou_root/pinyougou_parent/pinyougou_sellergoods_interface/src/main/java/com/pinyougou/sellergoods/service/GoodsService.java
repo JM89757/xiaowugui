@@ -2,6 +2,7 @@ package com.pinyougou.sellergoods.service;
 
 import com.pinyougou.pojo.Goods;
 import com.pinyougou.pojo.TbGoods;
+import com.pinyougou.pojo.TbItem;
 import entity.PageResult;
 
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
  * @author Administrator
  */
 public interface GoodsService {
+
+    public List<TbItem> findItemListByGoods(Long[] goodsIds, String status);
 
     public void updateIsMarketable(Long[] ids, String status);
 

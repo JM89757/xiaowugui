@@ -12,6 +12,7 @@ import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ import java.util.Map;
  *
  * @author Administrator
  */
-@Service
+@Service(timeout = 3000)
 @Transactional
 public class GoodsServiceImpl implements GoodsService {
 
@@ -49,6 +50,15 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     private TbGoodsDescMapper tbGoodsDescMapper;
 
+
+    @Override
+    public List<TbItem> findItemListByGoods(Long[] goodsIds, String status) {
+        TbItemExample example = new TbItemExample();
+        TbItemExample.Criteria criteria = example.createCriteria();
+        criteria.andGoodsIdIn(Arrays.asList(goodsIds));
+        criteria.andStatusEqualTo(status);
+        return itemMapper.selectByExample(example);
+    }
 
     @Override
     public void updateIsMarketable(Long[] ids, String status) {
