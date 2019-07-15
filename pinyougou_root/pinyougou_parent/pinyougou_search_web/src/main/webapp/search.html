@@ -2,20 +2,19 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible" />
+    <meta charset="utf-8"/>
+    <meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible"/>
     <title>产品列表页</title>
     <link href="assets/img/favicon.ico" rel="icon">
 
-    <link href="css/webbase.css" rel="stylesheet" type="text/css" />
-    <link href="css/pages-list.css" rel="stylesheet" type="text/css" />
-    <link href="css/widget-cartPanelView.css" rel="stylesheet" type="text/css" />
+    <link href="css/webbase.css" rel="stylesheet" type="text/css"/>
+    <link href="css/pages-list.css" rel="stylesheet" type="text/css"/>
+    <link href="css/widget-cartPanelView.css" rel="stylesheet" type="text/css"/>
 
     <script src="plugins/angularjs/angular.min.js" type="text/javascript"></script>
     <script src="js/base.js" type="text/javascript"></script>
     <script src="js/service/searchService.js" type="text/javascript"></script>
     <script src="js/controller/searchController.js" type="text/javascript"></script>
-
 
 
 </head>
@@ -32,7 +31,8 @@
                     <ul class="fl">
                         <li class="f-item">品优购欢迎您！</li>
                         <li class="f-item">请
-                            <a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span></li>
+                            <a href="login.html" target="_blank">登录</a>　<span><a href="register.html" target="_blank">免费注册</a></span>
+                        </li>
                     </ul>
                     <ul class="fr">
                         <li class="f-item">我的订单</li>
@@ -83,8 +83,11 @@
                             <form action="" class="sui-form form-inline">
                                 <!--searchAutoComplete-->
                                 <div class="input-append">
-                                    <input class="input-error input-xxlarge" id="autocomplete" ng-model="searchMap.keywords" type="text" type="text" />
-                                    <button class="sui-btn btn-xlarge btn-danger" ng-click="search()" type="button">搜索</button>
+                                    <input class="input-error input-xxlarge" id="autocomplete"
+                                           ng-model="searchMap.keywords" type="text" type="text"/>
+                                    <button class="sui-btn btn-xlarge btn-danger" ng-click="searchMap.pageNo=1;search()"
+                                            type="button">搜索
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -155,13 +158,17 @@
                 </li>
 
 
-
             </ul>
             <ul class="tags-choose">
-                <li class="tag" ng-click="removeSearchItem('category')" ng-if="searchMap.category!=''">商品分类：{{searchMap.category}}<i class="sui-icon icon-tb-close"></i></li>
-                <li class="tag" ng-click="removeSearchItem('brand')" ng-if="searchMap.brand!=''">品牌：{{searchMap.brand}}<i class="sui-icon icon-tb-close"></i></li>
-                <li class="tag" ng-click="removeSearchItem(key)" ng-repeat="(key,value) in searchMap.spec">{{key}}：{{value}}<i class="sui-icon icon-tb-close"></i></li>
-
+                <li class="tag" ng-click="removeSearchItem('category')" ng-if="searchMap.category!=''">
+                    商品分类：{{searchMap.category}}<i class="sui-icon icon-tb-close"></i></li>
+                <li class="tag" ng-click="removeSearchItem('brand')" ng-if="searchMap.brand!=''">
+                    品牌：{{searchMap.brand}}<i class="sui-icon icon-tb-close"></i></li>
+                <li class="tag" ng-click="removeSearchItem(key)" ng-repeat="(key,value) in searchMap.spec">
+                    {{key}}：{{value}}<i class="sui-icon icon-tb-close"></i></li>
+                <li class="tag" ng-click="removeSearchItem('price')" ng-if="searchMap.price!=''">
+                    商品分类：{{searchMap.price}}<i class="sui-icon icon-tb-close"></i></li>
+                搜索结果：{{resultMap.total}}条
             </ul>
 
             <div class="clearfix"></div>
@@ -171,7 +178,7 @@
             <div class="type-wrap" ng-if="resultMap.categoryList!=null && searchMap.category=='' ">
                 <div class="fl key">商品分类</div>
                 <div class="fl value">
-						<span ng-repeat="category in resultMap.categoryList" >
+						<span ng-repeat="category in resultMap.categoryList">
 						   <a href="#" ng-click="addSearchItem('category',category)">{{category}}</a>
 						</span>
                 </div>
@@ -182,7 +189,7 @@
                 <div class="value logos">
                     <ul class="logo-list">
                         <li ng-repeat="brand in resultMap.brandList">
-                            <a href="#" ng-click="addSearchItem('brand',brand.text)">{{brand.text}}</a>
+                            <a href="#" ng-click="addSearchItem('brand',brand.text);searchMap.pageNo=1;search()">{{brand.text}}</a>
                         </li>
                     </ul>
                 </div>
@@ -203,27 +210,27 @@
                 <div class="fl ext"></div>
             </div>
 
-            <div class="type-wrap">
+            <div class="type-wrap" ng-if="searchMap.price=='' ">
                 <div class="fl key">价格</div>
                 <div class="fl value">
                     <ul class="type-list">
                         <li>
-                            <a>0-500元</a>
+                            <a href="#" ng-click="addSearchItem('price','0-500')">0-500元</a>
                         </li>
                         <li>
-                            <a>500-1000元</a>
+                            <a href="#" ng-click="addSearchItem('price','500-1000')">500-1000元</a>
                         </li>
                         <li>
-                            <a>1000-1500元</a>
+                            <a href="#" ng-click="addSearchItem('price','1000-1500')">1000-1500元</a>
                         </li>
                         <li>
-                            <a>1500-2000元</a>
+                            <a href="#" ng-click="addSearchItem('price','1500-2000')">1500-2000元</a>
                         </li>
                         <li>
-                            <a>2000-3000元 </a>
+                            <a href="#" ng-click="addSearchItem('price','2000-3000')">2000-3000元 </a>
                         </li>
                         <li>
-                            <a>3000元以上</a>
+                            <a href="#" ng-click="addSearchItem('price','3000- ')">3000元以上</a>
                         </li>
                     </ul>
                 </div>
@@ -256,24 +263,28 @@
             </div>
         </div>
         <!--details-->
+        <a name="goodsList"></a>
         <div class="details">
             <div class="sui-navbar">
                 <div class="navbar-inner filter">
                     <ul class="sui-nav">
                         <li class="active">
-                            <a href="#">综合</a>
+                            <a href="#" ng-click="sortSearch('','')">综合</a>
                         </li>
                         <li>
                             <a href="#">销量</a>
                         </li>
                         <li>
-                            <a href="#">新品</a>
+                            <a href="#" ng-click="sortSearch('createtime','DESC')">新品</a>
                         </li>
                         <li>
                             <a href="#">评价</a>
                         </li>
                         <li>
-                            <a href="#">价格</a>
+                            <a href="#" ng-click="sortSearch('price','ASC')">价格↑</a>
+                        </li>
+                        <li>
+                            <a href="#" ng-click="sortSearch('price','DESC')">价格↓</a>
                         </li>
                     </ul>
                 </div>
@@ -283,7 +294,7 @@
                     <li class="yui3-u-1-5" ng-repeat="item in resultMap.rows">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <a href="item.html" target="_blank"><img src="{{item.image}}" /></a>
+                                <a href="item.html" target="_blank"><img src="{{item.image}}"/></a>
                             </div>
                             <div class="price">
                                 <strong>
@@ -313,33 +324,23 @@
             <div class="fr page">
                 <div class="sui-pagination pagination-large">
                     <ul>
-                        <li class="prev disabled">
-                            <a href="#">«上一页</a>
+                        <li class="prev {{isTopPage()?'disabled':''}}">
+                            <a href="#goodsList" ng-click="queryByPage(searchMap.pageNo-1)">«</a>
                         </li>
-                        <li class="active">
-                            <a href="#">1</a>
+                        <li class="dotted" ng-if="firstDot==true"><span>...</span></li>
+                        <li class="$scope.resultMap.pageNo==page?'active':''" ng-repeat="page in pageLabel">
+                            <a href="#goodsList" ng-click="queryByPage(page)">{{page}}</a>
                         </li>
-                        <li>
-                            <a href="#">2</a>
-                        </li>
-                        <li>
-                            <a href="#">3</a>
-                        </li>
-                        <li>
-                            <a href="#">4</a>
-                        </li>
-                        <li>
-                            <a href="#">5</a>
-                        </li>
-                        <li class="dotted"><span>...</span></li>
-                        <li class="next">
-                            <a href="#">下一页»</a>
+                        <li class="dotted" ng-if="lastDot==true"><span>...</span></li>
+                        <li class="next {{isEndPage()?'disabled':''}}">
+                            <a href="#goodsList" ng-click="queryByPage(searchMap.pageNo+1)">»</a>
                         </li>
                     </ul>
-                    <div><span>共10页&nbsp;</span><span>
+                    <div><span>共{{resultMap.totalPages}}页&nbsp;</span><span>
       到第
-      <input class="page-num" type="text">
-      页 <button class="page-confirm" onclick="alert(1)">确定</button></span></div>
+      <input class="page-num" ng-model="searchMap.pageNo" type="text">
+      页 <button class="page-confirm" ng-click="queryByPage(searchMap.pageNo)"><a
+                            href="#goodsList">确定</a></button></span></div>
                 </div>
             </div>
         </div>
@@ -351,7 +352,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="img/like_01.png" />
+                                <img src="img/like_01.png"/>
                             </div>
                             <div class="attr">
                                 <em>Apple苹果iPhone 6s (A1699)</em>
@@ -370,7 +371,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="img/like_03.png" />
+                                <img src="img/like_03.png"/>
                             </div>
                             <div class="attr">
                                 <em>金属A面，360°翻转，APP下单省300！</em>
@@ -389,7 +390,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="img/like_04.png" />
+                                <img src="img/like_04.png"/>
                             </div>
                             <div class="attr">
                                 <em>256SSD商务大咖，完爆职场，APP下单立减200</em>
@@ -408,7 +409,7 @@
                     <li class="yui3-u-1-4">
                         <div class="list-wrap">
                             <div class="p-img">
-                                <img src="img/like_02.png" />
+                                <img src="img/like_02.png"/>
                             </div>
                             <div class="attr">
                                 <em>Apple苹果iPhone 6s (A1699)</em>
@@ -572,7 +573,7 @@
                 <div class="J-content toolbar-panel tbar-panel-cart toolbar-animate-out" style="visibility: hidden;">
                     <h3 class="tbar-panel-header J-panel-header">
                         <a class="title" href=""><i></i><em class="title">购物车</em></a>
-                        <span class="close-panel J-close" onclick="cartPanelView.tbar_panel_close('cart');" ></span>
+                        <span class="close-panel J-close" onclick="cartPanelView.tbar_panel_close('cart');"></span>
                     </h3>
                     <div class="tbar-panel-main">
                         <div class="tbar-panel-content J-panel-content">
@@ -592,8 +593,8 @@
                     <!-- 小计 -->
                     <div class="tbar-panel-footer J-panel-footer" id="cart-footer">
                         <div class="tbar-checkout">
-                            <div class="jtc-number"> <strong class="J-count" id="cart-number">0</strong>件商品 </div>
-                            <div class="jtc-sum"> 共计：<strong class="J-total" id="cart-sum">¥0</strong> </div>
+                            <div class="jtc-number"><strong class="J-count" id="cart-number">0</strong>件商品</div>
+                            <div class="jtc-sum"> 共计：<strong class="J-total" id="cart-sum">¥0</strong></div>
                             <a class="jtc-btn J-btn" href="#none" target="_blank">去购物车结算</a>
                         </div>
                     </div>
@@ -608,7 +609,7 @@
                     <div class="tbar-panel-main">
                         <div class="tbar-panel-content J-panel-content">
                             <div class="tbar-tipbox2">
-                                <div class="tip-inner"> <i class="i-loading"></i> </div>
+                                <div class="tip-inner"><i class="i-loading"></i></div>
                             </div>
                         </div>
                     </div>
@@ -649,17 +650,20 @@
 
             <!-- 侧栏按钮 -->
             <div class="toolbar-tabs J-tab">
-                <div class="toolbar-tab tbar-tab-cart" data="购物车" onclick="cartPanelView.tabItemClick('cart')" tag="cart">
+                <div class="toolbar-tab tbar-tab-cart" data="购物车" onclick="cartPanelView.tabItemClick('cart')"
+                     tag="cart">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count " id="tab-sub-cart-count">0</span>
                 </div>
-                <div class="toolbar-tab tbar-tab-follow" data="我的关注" onclick="cartPanelView.tabItemClick('follow')" tag="follow">
+                <div class="toolbar-tab tbar-tab-follow" data="我的关注" onclick="cartPanelView.tabItemClick('follow')"
+                     tag="follow">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count hide">0</span>
                 </div>
-                <div class="toolbar-tab tbar-tab-history" data="我的足迹" onclick="cartPanelView.tabItemClick('history')" tag="history">
+                <div class="toolbar-tab tbar-tab-history" data="我的足迹" onclick="cartPanelView.tabItemClick('history')"
+                     tag="history">
                     <i class="tab-ico"></i>
                     <em class="tab-text"></em>
                     <span class="tab-sub J-count hide">0</span>
@@ -691,11 +695,11 @@
             <div class="promo-text">已购满600元，您可领赠品</div>
         </div>
         <div class="jtc-item-goods">
-            <span class="p-img"><a href="#" target="_blank"><img src="{2}" alt="{1}" height="50" width="50" /></a></span>
+            <span class="p-img"><a href="#" target="_blank"><img src="{2}" alt="{1}" height="50" width="50"/></a></span>
             <div class="p-name">
                 <a href="#">{1}</a>
             </div>
-            <div class="p-price"><strong>¥{3}</strong>×{4} </div>
+            <div class="p-price"><strong>¥{3}</strong>×{4}</div>
             <a href="#none" class="p-del J-del">删除</a>
         </div>
     </div>
@@ -703,15 +707,15 @@
 <!--侧栏面板结束-->
 <script src="js/plugins/jquery/jquery.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-    $(function() {
-        $("#service").hover(function() {
+    $(function () {
+        $("#service").hover(function () {
             $(".service").show();
-        }, function() {
+        }, function () {
             $(".service").hide();
         });
-        $("#shopcar").hover(function() {
+        $("#shopcar").hover(function () {
             $("#shopcarlist").show();
-        }, function() {
+        }, function () {
             $("#shopcarlist").hide();
         });
 
