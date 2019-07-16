@@ -1,6 +1,7 @@
 package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.Goods;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
@@ -30,6 +31,15 @@ public class GoodsController {
 
     @Reference
     private ItemSearchService itemSearchService;
+
+    @Reference
+    private ItemPageService itemPageService;
+
+    @RequestMapping("/genItemHtml")
+    public void genItemHtml(Long goodsId) {
+        itemPageService.genItemHtml(goodsId);
+    }
+
 
     @RequestMapping("/updateStatus")
     public Result updateStatus(Long[] ids, String status) {
