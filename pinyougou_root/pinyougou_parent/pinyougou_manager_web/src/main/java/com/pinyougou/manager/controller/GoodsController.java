@@ -52,6 +52,9 @@ public class GoodsController {
                 } else {
                     System.out.println("Nothing is here");
                 }
+                for (Long goodsId : ids) {
+                    itemPageService.genItemHtml(goodsId);
+                }
             }
             return new Result(true, "Success");
         } catch (Exception e) {

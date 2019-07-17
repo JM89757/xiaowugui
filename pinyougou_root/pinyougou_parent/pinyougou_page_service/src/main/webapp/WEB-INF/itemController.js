@@ -20,16 +20,16 @@ app.controller("itemController", function ($scope) {
 
     matchObject = function (map1, map2) {
 
-        /*        for (var k in map1) {
-                    if (map1[k] !== map2[k]) {
-                        return false;
-                    }
-                }
-                for (var k in map2) {
-                    if (map2[k] !== map1[k]) {
-                        return false;
-                    }
-                }*/
+        /*  for (var k in map1) {
+              if (map1[k] !== map2[k]) {
+                  return false;
+              }
+          }
+          for (var k in map2) {
+              if (map2[k] !== map1[k]) {
+                  return false;
+              }
+          }*/
         for (var k in map1) {
             if (map1.length === map2.length && map1[k] !== map2[k]) {
                 return false;
