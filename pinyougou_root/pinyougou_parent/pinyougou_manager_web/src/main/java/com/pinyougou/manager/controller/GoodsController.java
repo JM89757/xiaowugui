@@ -1,21 +1,25 @@
 package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.Goods;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
-import com.pinyougou.search.service.ItemSearchService;
 import com.pinyougou.sellergoods.service.GoodsService;
 import entity.PageResult;
 import entity.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
+import javax.jms.Destination;
 import java.util.List;
+
+//import com.pinyougou.search.service.ItemSearchService;
 
 /**
  * controller
@@ -29,8 +33,13 @@ public class GoodsController {
     @Reference
     private GoodsService goodsService;
 
-    @Reference
-    private ItemSearchService itemSearchService;
+    //    @Reference
+//    private ItemSearchService itemSearchService;
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Autowired
+    private Destination queueSolrDestination;
 
     @Reference
     private ItemPageService itemPageService;
@@ -48,7 +57,15 @@ public class GoodsController {
             if ("1".equals(status)) {
                 List<TbItem> itemList = goodsService.findItemListByGoods(ids, status);
                 if (itemList.size() > 0) {
-                    itemSearchService.importList(itemList);
+//                    itemSearchService.importList(itemList);
+                    final String jsonString = JSON.toJSONString(itemList);
+                    /*jmsTemplate.send(queueSolrDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(jsonString);
+                        }
+                    });*/
+                    jmsTemplate.send(queueSolrDestination, (session) -> session.createTextMessage(jsonString));
                 } else {
                     System.out.println("Nothing is here");
                 }
@@ -143,7 +160,7 @@ public class GoodsController {
     public Result delete(Long[] ids) {
         try {
             goodsService.delete(ids);
-            itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+//            itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();
