@@ -2,7 +2,6 @@ package com.pinyougou.manager.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.pinyougou.page.service.ItemPageService;
 import com.pinyougou.pojo.Goods;
 import com.pinyougou.pojo.TbGoods;
 import com.pinyougou.pojo.TbItem;
@@ -39,14 +38,25 @@ public class GoodsController {
     private JmsTemplate jmsTemplate;
 
     @Autowired
-    private Destination queueSolrDestination;
+    private Destination queueTextDestination;
 
-    @Reference
-    private ItemPageService itemPageService;
+    @Autowired
+    private Destination queueSolrDeleteDestination;
+
+    @Autowired
+    private Destination topicPageDestination;
+
+
+    @Autowired
+    private Destination topicPageDeleteDestination;
+
+
+//    @Reference
+//    private ItemPageService itemPageService;
 
     @RequestMapping("/genItemHtml")
     public void genItemHtml(Long goodsId) {
-        itemPageService.genItemHtml(goodsId);
+//        itemPageService.genItemHtml(goodsId);
     }
 
 
@@ -59,18 +69,25 @@ public class GoodsController {
                 if (itemList.size() > 0) {
 //                    itemSearchService.importList(itemList);
                     final String jsonString = JSON.toJSONString(itemList);
-                    /*jmsTemplate.send(queueSolrDestination, new MessageCreator() {
+                    /*jmsTemplate.send(queueTextDestination, new MessageCreator() {
                         @Override
                         public Message createMessage(Session session) throws JMSException {
                             return session.createTextMessage(jsonString);
                         }
                     });*/
-                    jmsTemplate.send(queueSolrDestination, (session) -> session.createTextMessage(jsonString));
+                    jmsTemplate.send(queueTextDestination, (session) -> session.createTextMessage(jsonString));
                 } else {
                     System.out.println("Nothing is here");
                 }
                 for (Long goodsId : ids) {
-                    itemPageService.genItemHtml(goodsId);
+//                    itemPageService.genItemHtml(goodsId);
+           /*         jmsTemplate.send(topicPageDestination, new MessageCreator() {
+                        @Override
+                        public Message createMessage(Session session) throws JMSException {
+                            return session.createTextMessage(goodsId + "");
+                        }
+                    });*/
+                    jmsTemplate.send(topicPageDestination, session -> session.createTextMessage(goodsId + ""));
                 }
             }
             return new Result(true, "Success");
@@ -161,6 +178,23 @@ public class GoodsController {
         try {
             goodsService.delete(ids);
 //            itemSearchService.deleteByGoodsIds(Arrays.asList(ids));
+     /*       jmsTemplate.send(queueSolrDeleteDestination, new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    return session.createObjectMessage(ids);
+                }
+            });*/
+            jmsTemplate.send(queueSolrDeleteDestination, session -> session.createObjectMessage(ids));
+
+           /* jmsTemplate.send(topicPageDeleteDestination, new MessageCreator() {
+                @Override
+                public Message createMessage(Session session) throws JMSException {
+                    return session.createObjectMessage(ids);
+                }
+            });*/
+            jmsTemplate.send(topicPageDeleteDestination, session -> session.createObjectMessage(ids));
+
+
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();

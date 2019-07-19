@@ -3,7 +3,7 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
-	">
+">
 
     <!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供-->
     <bean id="targetConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -16,29 +16,29 @@
         <property name="targetConnectionFactory" ref="targetConnectionFactory"/>
     </bean>
 
-    <!--这个是队列目的地，导入索引库-->
-    <bean id="queueSolrDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="pinyougou_queue_solr"/>
+    <!--这个是主题目的    生成页面-->
+    <bean id="topicPageDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="pinyougou_topic_page"/>
     </bean>
 
-    <!-- 消息监听容器  导入索引库-->
+    <!-- 消息监听容器   生成页面 -->
     <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
-        <property name="destination" ref="queueSolrDestination"/>
-        <property name="messageListener" ref="itemSearchListener"/>
+        <property name="destination" ref="topicPageDestination"/>
+        <property name="messageListener" ref="pageListener"/>
     </bean>
 
-    <!--这个是队列目的地，导入索引库-->
-    <bean id="queueSolrDeleteDestination" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="pinyougou_queue_solr_delete"/>
+
+    <!--这个是主题目的    删除页面-->
+    <bean id="topicPageDeleteDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="pinyougou_topic_page_delete"/>
     </bean>
 
-    <!-- 消息监听容器  导入索引库-->
+    <!-- 消息监听容器   生成页面 -->
     <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
-        <property name="destination" ref="queueSolrDeleteDestination"/>
-        <property name="messageListener" ref="itemDeleteListener"/>
+        <property name="destination" ref="topicPageDeleteDestination"/>
+        <property name="messageListener" ref="pageDeleteListener"/>
     </bean>
-
 
 </beans>
