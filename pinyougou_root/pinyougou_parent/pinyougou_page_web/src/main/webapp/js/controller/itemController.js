@@ -1,4 +1,4 @@
-app.controller("itemController", function ($scope) {
+app.controller("itemController", function ($scope, $http) {
 
     $scope.specificationItems = {};
 
@@ -50,6 +50,14 @@ app.controller("itemController", function ($scope) {
     };
 
     $scope.addToCart = function () {
+        $http.get('http://localhost:9107/cart/addGoodsToCartList.do?itemId=' + $scope.sku.id + '&num=' + $scope.num, {'withCredentials': true}).success(
+            function (response) {
+                if (response.success) {
+                    location.href = 'http://localhost:9107/cart.html';
+                } else {
+                    alert(response.message);
+                }
+            });
         alert('SKUID:' + $scope.sku.id);
     };
 

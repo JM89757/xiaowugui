@@ -7,13 +7,16 @@ import com.pinyougou.pojo.Cart;
 import entity.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import util.CookieUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/cart")
@@ -28,18 +31,14 @@ public class CartController {
     @Autowired
     private HttpServletResponse response;
 
-/*
-    @RequestMapping("/findCartList")
-    public List<Cart> findCartList() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("当前登录人：" + name);
-        String cartListString = util.CookieUtil.getCookieValue(request, "cartList", "UTF-8");
-        if (cartListString == null || cartListString.equals("")) {
-            cartListString = "[]";
-        }
-        return JSON.parseArray(cartListString, Cart.class);
+    @RequestMapping("/showName")
+    public Map showName() {
+        String loginName = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("当前登录人：" + loginName);
+        Map map = new HashMap<>();
+        map.put("loginName", loginName);
+        return map;
     }
-*/
 
 
     @RequestMapping("/findCartList")
@@ -68,7 +67,10 @@ public class CartController {
     }
 
     @RequestMapping("/addGoodsToCartList")
+    @CrossOrigin(origins = "http://localhost:9105")
     public Result addGoodsToCartList(Long itemId, Integer num) {
+//        response.setHeader("Access-Control-Allow-Origin", "http://localhost:9105");
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("当前的用户是：" + username);
         try {

@@ -1,5 +1,19 @@
 app.service('cartService', function ($http) {
 
+    this.submitOrder = function (order) {
+        return $http.post('order/add.do', order);
+    };
+
+
+    this.findAddressList = function () {
+        return $http.get('address/findListByLoginUser.do');
+
+    };
+
+    this.showName = function () {
+        return $http.get('cart/showName.do');
+    };
+
     this.findCartList = function () {
         return $http.get('cart/findCartList.do');
     };
