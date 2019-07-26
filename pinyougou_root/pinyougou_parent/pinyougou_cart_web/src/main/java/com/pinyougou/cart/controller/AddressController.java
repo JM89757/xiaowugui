@@ -60,8 +60,9 @@ public class AddressController {
      */
     @RequestMapping("/add")
     public Result add(@RequestBody TbAddress address) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            addressService.add(address);
+            addressService.add(address, userId);
             return new Result(true, "增加成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,8 +78,9 @@ public class AddressController {
      */
     @RequestMapping("/update")
     public Result update(@RequestBody TbAddress address) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            addressService.update(address);
+            addressService.update(address, userId);
             return new Result(true, "修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,13 +102,13 @@ public class AddressController {
     /**
      * 批量删除
      *
-     * @param ids
+     * @param id
      * @return
      */
     @RequestMapping("/delete")
-    public Result delete(Long[] ids) {
+    public Result delete(Long id) {
         try {
-            addressService.delete(ids);
+            addressService.delete(id);
             return new Result(true, "删除成功");
         } catch (Exception e) {
             e.printStackTrace();

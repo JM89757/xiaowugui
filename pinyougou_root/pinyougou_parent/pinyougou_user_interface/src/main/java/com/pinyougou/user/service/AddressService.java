@@ -35,13 +35,13 @@ public interface AddressService {
     /**
      * 增加
      */
-    public void add(TbAddress address);
+    public void add(TbAddress address, String userId);
 
 
     /**
      * 修改
      */
-    public void update(TbAddress address);
+    public void update(TbAddress address, String userId);
 
 
     /**
@@ -56,9 +56,9 @@ public interface AddressService {
     /**
      * 批量删除
      *
-     * @param ids
+     * @param id
      */
-    public void delete(Long[] ids);
+    public void delete(Long id);
 
     /**
      * 分页

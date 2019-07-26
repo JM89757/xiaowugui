@@ -54,7 +54,8 @@ public class AddressServiceImpl implements AddressService {
      * 增加
      */
     @Override
-    public void add(TbAddress address) {
+    public void add(TbAddress address, String userId) {
+        address.setUserId(userId);
         addressMapper.insert(address);
     }
 
@@ -63,7 +64,8 @@ public class AddressServiceImpl implements AddressService {
      * 修改
      */
     @Override
-    public void update(TbAddress address) {
+    public void update(TbAddress address, String userId) {
+        address.setUserId(userId);
         addressMapper.updateByPrimaryKey(address);
     }
 
@@ -82,10 +84,9 @@ public class AddressServiceImpl implements AddressService {
      * 批量删除
      */
     @Override
-    public void delete(Long[] ids) {
-        for (Long id : ids) {
+    public void delete(Long id) {
             addressMapper.deleteByPrimaryKey(id);
-        }
+
     }
 
 

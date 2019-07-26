@@ -1,5 +1,48 @@
 app.controller('cartController', function ($scope, cartService) {
 
+    $scope.del = function () {
+        if (confirm('Are you sure?')) {
+            cartService.del($scope.address.id).success(
+                function (data) {
+                    if (data.success) {
+                        alert(data.message);
+                        location.href = "http://localhost:9107/getOrderInfo.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            );
+        }
+    };
+
+
+    $scope.saveAddressList = function () {
+        var object = null;
+        if ($scope.address.id != null) {
+            object = cartService.update($scope.address);
+        } else {
+            object = cartService.add($scope.address);
+        }
+        object.success(
+            function (data) {
+                if (data.success) {
+                    alert(data.message);
+                    location.href = "http://localhost:9107/getOrderInfo.html";
+                } else {
+                    alert(data.message);
+                }
+            }
+        );
+    };
+
+    /*    $scope.showTooltip = function () {
+            $("[data-toggle=tooltip]").tooltip("show");
+        };
+        $scope.hideTooltip = function () {
+            $("[data-toggle=tooltip]").tooltip("hide");
+        };*/
+
+
     $scope.submitOrder = function () {
         $scope.order.receiverAreaName = $scope.address.address;
         $scope.order.receiverMobile = $scope.address.mobile;

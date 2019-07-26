@@ -1,5 +1,22 @@
 app.service('cartService', function ($http) {
 
+    // this.findOne = function (userId) {
+    //     return $http.get('address/findOne.do?userId=' + userId);
+    // };
+
+    this.add = function (address) {
+        return $http.post('address/add.do', address);
+    };
+
+    this.update = function (address) {
+        return $http.post('address/update.do', address);
+    };
+
+    this.del = function (id) {
+        return $http.get('address/delete.do?id=' + id);
+    };
+
+
     this.submitOrder = function (order) {
         return $http.post('order/add.do', order);
     };
