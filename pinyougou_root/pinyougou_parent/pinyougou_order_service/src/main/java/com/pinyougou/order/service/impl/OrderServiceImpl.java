@@ -5,18 +5,17 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.pinyougou.mapper.TbOrderItemMapper;
 import com.pinyougou.mapper.TbOrderMapper;
+import com.pinyougou.mapper.TbPayLogMapper;
 import com.pinyougou.order.service.OrderService;
-import com.pinyougou.pojo.Cart;
-import com.pinyougou.pojo.TbOrder;
-import com.pinyougou.pojo.TbOrderExample;
+import com.pinyougou.pojo.*;
 import com.pinyougou.pojo.TbOrderExample.Criteria;
-import com.pinyougou.pojo.TbOrderItem;
 import entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import util.IdWorker;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,6 +38,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private TbPayLogMapper payLogMapper;
+
+    @Override
+    public TbPayLog searchPayLogFromRedis(String userId) {
+        return (TbPayLog) redisTemplate.boundHashOps("payLog").get(userId);
+    }
+
+    @Override
+    public void updateOrderStatus(String out_trade_no, String transaction_id) {
+        TbPayLog payLog = payLogMapper.selectByPrimaryKey(out_trade_no);
+        payLog.setPayTime(new Date());
+        payLog.setTradeState("1");
+        payLog.setTransactionId(transaction_id);
+
+        payLogMapper.updateByPrimaryKey(payLog);
+
+        String orderList = payLog.getOrderList();
+        String[] orderIds = orderList.split(",");
+        for (String orderId : orderIds) {
+            TbOrder order = orderMapper.selectByPrimaryKey(Long.valueOf(orderId));
+            order.setStatus("2");
+            order.setPaymentTime(new Date());
+            orderMapper.updateByPrimaryKey(order);
+        }
+
+        redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
+    }
 
     /**
      * 查询全部
@@ -64,6 +92,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(TbOrder order) {
         List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(order.getUserId());
+
+        List<String> orderList = new ArrayList<String>();
+        double total_money = 0;
         for (Cart cart : cartList) {
             TbOrder tbOrder = new TbOrder();
             long orderId = idWorker.nextId();
@@ -90,7 +121,28 @@ public class OrderServiceImpl implements OrderService {
             }
             tbOrder.setPayment(new BigDecimal(money));
             orderMapper.insert(tbOrder);
+
+            orderList.add(orderId + "");
+            total_money += money;
         }
+
+        if ("1".equals(order.getPaymentType())) {
+            TbPayLog payLog = new TbPayLog();
+
+            payLog.setOutTradeNo(idWorker.nextId() + "");
+            payLog.setCreateTime(new Date());
+            payLog.setUserId(order.getUserId());
+            payLog.setOrderList(orderList.toString().replace("[", "").replace("]", ""));
+            payLog.setTotalFee((long) (total_money * 100));
+            payLog.setTradeState("0");
+            payLog.setPayType("1");
+
+            payLogMapper.insert(payLog);
+
+            redisTemplate.boundHashOps("payLog").put(order.getUserId(), payLog);
+        }
+
+
         redisTemplate.boundHashOps("cartList").delete(order.getUserId());
     }
 
