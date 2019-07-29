@@ -38,15 +38,16 @@ public class PayController {
     @RequestMapping("/queryPayStatus")
     public Result queryPayStatus(String out_trade_no) {
         Result result = null;
-        Map<String, String> map = weixinPayService.queryPayStatus(out_trade_no);
+
         int i = 0;
         while (true) {
+            Map<String, String> map = weixinPayService.queryPayStatus(out_trade_no);
             if (map == null) {
                 result = new Result(false, "支付出错！！！");
                 break;
             }
 
-            if (map.get("trade_state").equals("SUCCESS")) {
+            if ("SUCCESS".equals(map.get("trade_state"))) {
                 result = new Result(true, "支付成功");
                 orderService.updateOrderStatus(out_trade_no, map.get("transaction_id"));
                 break;

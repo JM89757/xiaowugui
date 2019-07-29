@@ -23,14 +23,14 @@ public class WeixinPayServiceImpl implements WeixinPayService {
 
     @Override
     public Map createNative(String out_trade_no, String total_fee) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map map = new HashMap();
         map.put("appid", appid);
         map.put("mch_id", partner);
         map.put("nonce_str", WXPayUtil.generateNonceStr());
         map.put("body", "品优购");
         map.put("out_trade_no", out_trade_no);
         map.put("total_fee", total_fee);
-        map.put("spbill_create_ip", "127.0 .0 .1");
+        map.put("spbill_create_ip", "127.0.0.1");
         map.put("notify_url", "http://www.itcast.cn");
         map.put("trade_type", "NATIVE");
 
@@ -45,7 +45,7 @@ public class WeixinPayServiceImpl implements WeixinPayService {
             String content = httpClient.getContent();
             Map<String, String> xmlToMap = WXPayUtil.xmlToMap(content);
             System.out.println("微信返回的结果是：" + xmlToMap);
-            Map<String, String> result = new HashMap<String, String>();
+            Map result = new HashMap();
             result.put("code_url", xmlToMap.get("code_url"));
             result.put("out_trade_no", out_trade_no);
             result.put("total_fee", total_fee);
@@ -58,8 +58,8 @@ public class WeixinPayServiceImpl implements WeixinPayService {
     }
 
     @Override
-    public Map<String, String> queryPayStatus(String out_trade_no) {
-        Map<String, String> map = new HashMap<String, String>();
+    public Map queryPayStatus(String out_trade_no) {
+        Map map = new HashMap();
         map.put("appid", appid);
         map.put("mch_id", partner);
         map.put("nonce_str", WXPayUtil.generateNonceStr());

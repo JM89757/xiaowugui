@@ -1,48 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 	<meta charset="utf-8" />
 	<meta content="IE=9; IE=8; IE=7; IE=EDGE" http-equiv="X-UA-Compatible">
 	<meta content="IE=EmulateIE7" http-equiv="X-UA-Compatible" />
-	<title>产品详情页</title>
-	 
+	<title>秒杀详细页</title>
+	 <link href="/assets/img/favicon.ico" rel="icon">
+	
+
     <link href="css/webbase.css" rel="stylesheet" type="text/css" />
-    <link href="css/pages-item.css" rel="stylesheet" type="text/css" />
     <link href="css/pages-zoom.css" rel="stylesheet" type="text/css" />
+    <link href="css/pages-seckill-item.css" rel="stylesheet" type="text/css" />
     <link href="css/widget-cartPanelView.css" rel="stylesheet" type="text/css" />
     
     <script src="plugins/angularjs/angular.min.js" type="text/javascript"> </script>
     <script src="js/base.js" type="text/javascript"> </script>
-    <script src="js/controller/itemController.js" type="text/javascript"> </script>
-    <script>
-        var skuList=[
-           {
-             id:1369284,
-             title:'全新的 移动4G 16G',
-             price:10,
-             spec:{"网络":"移动4G","机身内存":"16G"}
-           } ,
-           {
-             id:1369285,
-             title:'全新的 联通4G 16G',
-             price:20,
-             spec:{"网络":"联通4G","机身内存":"16G"}
-           } ,
-           {
-             id:1369286,
-             title:'全新的 电信4G 16G',
-             price:30,
-             spec:{"网络":"电信4G","机身内存":"16G"}
-           } ,
-        ];
-        
-    </script>
+	<script src="js/service/seckillGoodsService.js" type="text/javascript"> </script>
+	<script src="js/controller/seckillGoodsController.js"> </script>
+	
 </head>
 
-<body ng-app="pinyougou" ng-controller="itemController" ng-init="num=1;loadSku()">
-
-<!--页面顶部 开始-->
+<body ng-app="pinyougou" ng-controller="seckillGoodsController" ng-init="findOne()">
+	<!-- 头部栏位 -->
+	<!--页面顶部-->
 <div id="nav-bottom">
 	<!--顶部-->
 	<div class="nav-top">
@@ -56,7 +37,7 @@
 					<ul class="fr">
 						<li class="f-item">我的订单</li>
 						<li class="f-item space"></li>
-						<li class="f-item"><a href="home.html" target="_blank">我的品优购</a></li>
+						<li class="f-item"><a href="seckillOrder.html" target="_blank">我的品优购</a></li>
 						<li class="f-item space"></li>
 						<li class="f-item">品优购会员</li>
 						<li class="f-item space"></li>
@@ -150,21 +131,45 @@
 	</div>
 </div>
 
-<!--页面顶部 结束-->
+<script src="js/plugins/jquery/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){
+	$("#service").hover(function(){
+		$(".service").show();
+	},function(){
+		$(".service").hide();
+	});
+	$("#shopcar").hover(function(){
+		$("#shopcarlist").show();
+	},function(){
+		$("#shopcarlist").hide();
+	});
+
+})
+</script>
+<script src="js/widget/cartPanelView.js" type="text/javascript"></script>
+<script src="js/model/cartModel.js" type="text/javascript"></script>
+<script src="js/czFunction.js" type="text/javascript"></script>
+<script src="js/plugins/jquery.easing/jquery.easing.min.js" type="text/javascript"></script>
+<script src="js/plugins/sui/sui.min.js" type="text/javascript"></script>
+<script src="js/plugins/jquery.jqzoom/jquery.jqzoom.js" type="text/javascript"></script>
+<script src="js/plugins/jquery.jqzoom/zoom.js" type="text/javascript"></script>
+<script type="text/javascript">
+			$(function(){
+				$("ul.btn-choose li a.btn-xlarge").click(function(){
+					alert("钻中");
+				});
+				$("#star").click(function(){
+					alert("关注成功");
+				})
+			})
+		</script>
+</body>
 	<div class="py-container">
 		<div id="item">
 			<div class="crumb-wrap">
 				<ul class="sui-breadcrumb">
-					<li>
-						<a href="#">图书、音像、电子书刊</a>
-					</li>
-					<li>
-						<a href="#">电子书刊</a>
-					</li>
-					<li>
-						<a href="#">电子书</a>
-					</li>	
-							
+					
 				</ul>
 			</div>
 			<!--product-info-->
@@ -174,38 +179,32 @@
 					<div class="zoom">
 						<!--默认第一个预览-->
 						<div class="spec-preview" id="preview">
-							<span class="jqzoom">
-							</span>
-						</div>
-						<!--下方的缩略图-->
-						<div class="spec-scroll">
-							<a class="prev">&lt;</a>
-							<!--左右按钮-->
-							<div class="items">
-								<ul>
-								</ul>
-							</div>
-							<a class="next">&gt;</a>
-						</div>
+							<span class="jqzoom"><img height="400px" jqimg="{{entity.smallPic}}" src="{{entity.smallPic}}" width="400px" /></span>
+						</div>						
 					</div>
+					
 				</div>
 				<div class="fr itemInfo-wrap">
 					<div class="sku-name">
-						<h4>{{sku.title}}</h4>
+						<h4>{{entity.title}}</h4>
 					</div>
-					<div class="news"><span>再出发 </span></div>
+					<div class="news">
+						<span><img src="img/_/clock.png"/>品优秒杀</span>
+						<span class="overtime">距离结束：{{timeString}}</span>
+						</div>
 					<div class="summary">
 						<div class="summary-wrap">
+							
 							<div class="fl title">
-								<i>价　　格</i>
+								<i>秒杀价</i>
 							</div>
 							<div class="fl price">
 								<i>¥</i>
-								<em>{{sku.price}}</em>
-								<span>降价通知</span>
+								<em>{{entity.costPrice.toFixed(2)}}</em>
+								<span>原价：{{entity.price.toFixed(2)}}</span>
 							</div>
 							<div class="fr remark">
-								<i>累计评价</i><em>612188</em>
+								剩余库存：{{entity.stockCount}}
 							</div>
 						</div>
 						<div class="summary-wrap">
@@ -214,8 +213,7 @@
 							</div>
 							<div class="fl fix-width">
 								<i class="red-bg">加价购</i>
-								<em class="t-gray">满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换
-购热销商品</em>
+								<em class="t-gray">满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换购热销商品</em>
 							</div>
 						</div>
 					</div>
@@ -238,62 +236,16 @@
 						</div>
 					</div>
 					<div class="clearfix choose">
-						<div class="summary-wrap clearfix" id="specification">
-							
-							  <dl>
-								<dt>
-									<div class="fl title">
-									<i>网络</i>
-								</div>
-								</dt>
-								
-								  <dd><a class="{{isSelected('网络','移动4G')?'selected':''}}"
-								        href="javascript:;"
-								        ng-click="selectSpecification('网络','移动4G')">移动4G
-								        <span title="点击取消选择">&nbsp;</span>
-								        </a></dd>
-								  <dd><a class="{{isSelected('网络','联通4G')?'selected':''}}"
-								        href="javascript:;"
-								        ng-click="selectSpecification('网络','联通4G')">联通4G
-								        <span title="点击取消选择">&nbsp;</span>
-								        </a></dd>
-								  <dd><a class="{{isSelected('网络','电信4G')?'selected':''}}"
-								        href="javascript:;"
-								        ng-click="selectSpecification('网络','电信4G')">电信4G
-								        <span title="点击取消选择">&nbsp;</span>
-								        </a></dd>
-							  </dl>
-							
-							  <dl>
-								<dt>
-									<div class="fl title">
-									<i>机身内存</i>
-								</div>
-								</dt>
-								
-								  <dd><a class="{{isSelected('机身内存','16G')?'selected':''}}"
-								        href="javascript:;"
-								        ng-click="selectSpecification('机身内存','16G')">16G
-								        <span title="点击取消选择">&nbsp;</span>
-								        </a></dd>
-							  </dl>
-							
-						</div>
-					
+						
+
 						<div class="summary-wrap">
 							<div class="fl title">
-								<div class="control-group">
-									<div class="controls">
-										<input autocomplete="off" class="itxt" minnum="1" ng-model="num" type="text" value="1" />
-										<a class="increment plus" href="javascript:void(0)" ng-click="addNum(1)">+</a>
-										<a class="increment mins" href="javascript:void(0)" ng-click="addNum(-1)">-</a>
-									</div>
-								</div>
+								
 							</div>
 							<div class="fl">
 								<ul class="btn-choose unstyled">
 									<li>
-										<a class="sui-btn  btn-danger addshopcar"  href="#" ng-click="addToCart()">加入购物车</a>
+										<a class="sui-btn  btn-danger addshopcar" ng-click="submitOrder()">立即抢购</a>
 									</li>
 								</ul>
 							</div>
@@ -304,6 +256,10 @@
 			<!--product-detail-->
 			<div class="clearfix product-detail">
 				<div class="fl aside">
+					<div class="shop">
+						<span class="fl">三星旗舰店</span><span class="fr"><a class="sui-btn btn-bordered btn-danger" href="shop.html" target="_blank">进入店铺</a></span>
+					</div>
+					<div class="clearfix"></div>
 					<ul class="sui-nav nav-tabs tab-wraped">
 						<li class="active">
 							<a data-toggle="tab" href="#index">
@@ -428,60 +384,7 @@
 					</div>
 				</div>
 				<div class="fr detail">
-					<div class="clearfix fitting">
-						<h4 class="kt">选择搭配</h4>
-						<div class="good-suits">
-							<div class="fl master">
-								<div class="list-wrap">
-									<div class="p-img">
-										<img src="img/_/l-m01.png" />
-									</div>
-									<em>￥5299</em>
-									<i>+</i>
-								</div>
-							</div>
-							<div class="fl suits">
-								<ul class="suit-list">
-									<li class="">
-										<div id="">
-											<img src="img/_/dp01.png" />
-										</div>
-										<i>Feless费勒斯VR</i>
-										<label class="checkbox-pretty" data-toggle="checkbox">
-    <input type="checkbox"><span>39</span>
-  </label>
-									</li>
-									<li class="">
-										<div id=""><img src="img/_/dp02.png" /> </div>
-										<i>Feless费勒斯VR</i>
-										<label class="checkbox-pretty" data-toggle="checkbox">
-    <input type="checkbox"><span>50</span>
-  </label>
-									</li>
-									<li class="">
-										<div id=""><img src="img/_/dp03.png" /></div>
-										<i>Feless费勒斯VR</i>
-										<label class="checkbox-pretty" data-toggle="checkbox">
-    <input type="checkbox"><span>59</span>
-  </label>
-									</li>
-									<li class="">
-										<div id=""><img src="img/_/dp04.png" /></div>
-										<i>Feless费勒斯VR</i>
-										<label class="checkbox-pretty" data-toggle="checkbox">
-    <input type="checkbox"><span>99</span>
-  </label>
-									</li>
-								</ul>
-							</div>
-							<div class="fr result">
-								<div class="num">已选购0件商品</div>
-								<div class="price-tit"><strong>套餐价</strong></div>
-								<div class="price">￥5299</div>
-								<button class="sui-btn  btn-danger addshopcar">加入购物车</button>
-							</div>
-						</div>
-					</div>
+					
 					<div class="tab-main intro">
 						<ul class="sui-nav nav-tabs tab-wraped">
 							<li class="active">
@@ -514,20 +417,17 @@
 						<div class="tab-content tab-wraped">
 							<div class="tab-pane active" id="one">
 								<ul class="goods-intro unstyled">
-									      <li>内存大小：10G</li>
-									      <li>颜色：天空灰</li>
+									
 								</ul>
 								<div class="intro-detail">
-									<h1>
-	<span style="color:#E53333;">你好啊</span>
-</h1>
+									{{entity.introduction}}
 								</div>
 							</div>
 							<div class="tab-pane" id="two">
-								<p>高级精品包装</p>
+								<p>规格与包装</p>
 							</div>
 							<div class="tab-pane" id="three">
-								<p>三包政策</p>
+								<p>售后保障</p>
 							</div>
 							<div class="tab-pane" id="four">
 								<p>商品评价</p>
@@ -539,134 +439,11 @@
 					</div>
 				</div>
 			</div>
-			<!--like-->
-			<div class="clearfix"></div>
-			<div class="like">
-				<h4 class="kt">猜你喜欢</h4>
-				<div class="like-list">
-					<ul class="yui3-g">
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike01.png" />
-								</div>
-								<div class="attr">
-									<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>3699.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有6人评价</i>
-								</div>
-							</div>
-						</li>
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike02.png" />
-								</div>
-								<div class="attr">
-									<em>Apple苹果iPhone 6s/6s Plus 16G 64G 128G</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>4388.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有700人评价</i>
-								</div>
-							</div>
-						</li>
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike03.png" />
-								</div>
-								<div class="attr">
-									<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有700人评价</i>
-								</div>
-							</div>
-						</li>
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike04.png" />
-								</div>
-								<div class="attr">
-									<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有700人评价</i>
-								</div>
-							</div>
-						</li>
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike05.png" />
-								</div>
-								<div class="attr">
-									<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有700人评价</i>
-								</div>
-							</div>
-						</li>
-						<li class="yui3-u-1-6">
-							<div class="list-wrap">
-								<div class="p-img">
-									<img src="img/_/itemlike06.png" />
-								</div>
-								<div class="attr">
-									<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-								</div>
-								<div class="price">
-									<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-								</div>
-								<div class="commit">
-									<i class="command">已有700人评价</i>
-								</div>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
+
 		</div>
 	</div>
 	<!-- 底部栏位 -->
-	
-<!--页面底部  开始 -->
+	<!--页面底部-->
 <div class="clearfix footer">
 	<div class="py-container">
 		<div class="footlink">
@@ -797,8 +574,7 @@
 		</div>
 	</div>
 </div>
-
-	
+<!--页面底部END-->
 	<!--侧栏面板开始-->
 <div class="J-global-toolbar">
 	<div class="toolbar-wrap J-wrap">
@@ -916,7 +692,7 @@
 
 	</div>
 </div>
-
+<!--购物车单元格 模板-->
 <script id="tbar-cart-item-template" type="text/template">
 	<div class="tbar-cart-item" >
 		<div class="jtc-item-promo">
@@ -933,33 +709,7 @@
 		</div>
 	</div>
 </script>
-
-	
-
-<script src="js/plugins/jquery/jquery.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(function(){
-	$("#service").hover(function(){
-		$(".service").show();
-	},function(){
-		$(".service").hide();
-	});
-	$("#shopcar").hover(function(){
-		$("#shopcarlist").show();
-	},function(){
-		$("#shopcarlist").hide();
-	});
-
-})
-</script>
-<script src="js/model/cartModel.js" type="text/javascript"></script>
-<script src="js/plugins/jquery.easing/jquery.easing.min.js" type="text/javascript"></script>
-<script src="js/plugins/sui/sui.min.js" type="text/javascript"></script>
-<script src="js/plugins/jquery.jqzoom/jquery.jqzoom.js" type="text/javascript"></script>
-<script src="js/plugins/jquery.jqzoom/zoom.js" type="text/javascript"></script>
-<script src="index/index.js" type="text/javascript"></script>
-
-<!--页面底部  结束 -->
-</body>
+<!--侧栏面板结束-->
+undefined
 
 </html>
