@@ -2,12 +2,11 @@ package com.pinyougou.mapper;
 
 import com.pinyougou.pojo.TbSeckillOrder;
 import com.pinyougou.pojo.TbSeckillOrderExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
 public interface TbSeckillOrderMapper {
-    long countByExample(TbSeckillOrderExample example);
+    int countByExample(TbSeckillOrderExample example);
 
     int deleteByExample(TbSeckillOrderExample example);
 

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface TbSeckillGoodsMapper {
-    long countByExample(TbSeckillGoodsExample example);
+    int countByExample(TbSeckillGoodsExample example);
 
     int deleteByExample(TbSeckillGoodsExample example);
 
