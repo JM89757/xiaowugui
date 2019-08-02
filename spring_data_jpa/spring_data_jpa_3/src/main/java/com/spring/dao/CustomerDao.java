@@ -16,9 +16,6 @@ public interface CustomerDao extends JpaRepository<Customer, Long>, JpaSpecifica
     @Query(value = "from  Customer where custName = ?2 and custId = ?1")
     public Customer findCustomerAndId(Long id, String custName);
 
-    @Query(value = "from  Customer where custName = ?2 or custId = ?1")
-    public List<Customer> findCustomerOrId(Long id, String custName);
-
     @Query(value = "update Customer set custName = ?2 where custId = ?1")
     @Modifying
     public void updateCustomer(Long custId, String custName);
@@ -36,4 +33,9 @@ public interface CustomerDao extends JpaRepository<Customer, Long>, JpaSpecifica
     public List<Customer> findByCustNameLike(String custName);
 
     public Customer findByCustNameLikeAndCustAddress(String custName, String custAddress);
+
+
+
+
+
 }

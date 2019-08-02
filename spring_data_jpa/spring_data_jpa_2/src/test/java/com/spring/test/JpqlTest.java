@@ -33,6 +33,16 @@ public class JpqlTest {
     }
 
     @Test
+    public void findCustomerOrId() {
+        List<Customer> customer = customerDao.findCustomerOrId(2L, "秦川铸造");
+//        for (Customer customer1 : customer) {
+//            System.out.println(customer1);
+//        }
+        System.out.println(customer);
+    }
+
+
+    @Test
     @Transactional
     @Rollback(value = false)
     public void updateCustomer() {
