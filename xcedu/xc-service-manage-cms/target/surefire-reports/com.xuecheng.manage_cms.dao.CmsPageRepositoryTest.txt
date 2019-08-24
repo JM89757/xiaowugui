@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: com.xuecheng.manage_cms.dao.CmsPageRepositoryTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 18.776 s <<< FAILURE! - in com.xuecheng.manage_cms.dao.CmsPageRepositoryTest
+testFindByPageName(com.xuecheng.manage_cms.dao.CmsPageRepositoryTest)  Time elapsed: 0.123 s  <<< ERROR!
+org.springframework.dao.IncorrectResultSizeDataAccessException: Query { "$java" : Query: { "pageName" : "测试页面" }, Fields: { }, Sort: { } } returned non unique result.
+	at com.xuecheng.manage_cms.dao.CmsPageRepositoryTest.testFindByPageName(CmsPageRepositoryTest.java:114)
+
